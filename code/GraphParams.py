@@ -21,9 +21,14 @@ class GraphParams:
         self.compute_p()
         self.RECOMPUTE_PARAMS_REQUIRED = False
 
+    def update_params(self, vertices):
+        self.N = len(self.ADJACENCY_MATRIX)
+        self.update_p(vertices)
+        self.RECOMPUTE_PARAMS_REQUIRED = False
+
     def compute_p(self):
 
-        Log.d(self.TAG, "compute_p: start")
+        Log.exc(self.TAG, "compute_p: start")
 
         # calculating out degree
         out_degree = np.zeros(self.N, dtype=int)
@@ -31,7 +36,7 @@ class GraphParams:
             for i in range(0, self.N):
                 out_degree[i] += self.ADJACENCY_MATRIX[i][j]
 
-        Log.i(self.TAG, "compute_p: \nout_degree="+str(out_degree))
+        # Log.i(self.TAG, "compute_p: \nout_degree="+str(out_degree))
 
         # computing P matrix
         self.P = np.zeros((self.N, self.N), dtype=np.double)
@@ -42,12 +47,11 @@ class GraphParams:
                 else:
                     self.P[i][j] = 0
 
-        Log.i(self.TAG, "compute_p: \nself.P="+str(self.P))
+        # Log.i(self.TAG, "compute_p: \nself.P="+str(self.P))
 
-        Log.d(self.TAG, "compute_p: end")
+        Log.exc(self.TAG, "compute_p: end")
 
     # NOTE : not tested
-    @DeprecationWarning
     def update_p(self, vertices):
 
         Log.d("update_p", "start")
@@ -60,11 +64,10 @@ class GraphParams:
 
         for j in vertices:
             for i in xrange(self.N):
-                pass
-            if self.ADJACENCY_MATRIX[j][i] != 0:
-                self.P[i][j] = 1/np.double(out_degree[j])
-            else:
-                self.P[i][j] = 0
+                if self.ADJACENCY_MATRIX[j][i] != 0:
+                    self.P[i][j] = 1/np.double(out_degree[j])
+                else:
+                    self.P[i][j] = 0
 
         Log.d("update_p", "end")
 
@@ -93,9 +96,9 @@ class GraphParams:
             # self.ADJACENCY_MATRIX is a [[]]
             self.ADJACENCY_MATRIX.append([0]*self.N)
 
-            Log.i(self.TAG, "add_node: N=" + str(self.N))
-            Log.i(self.TAG, "add_node: \nP="+str(self.P))
-            Log.i(self.TAG, "add_node: \nAM="+str(self.ADJACENCY_MATRIX))
+            # Log.i(self.TAG, "add_node: N=" + str(self.N))
+            # Log.i(self.TAG, "add_node: \nP="+str(self.P))
+            # Log.i(self.TAG, "add_node: \nAM="+str(self.ADJACENCY_MATRIX))
             return True
         else:
             Log.e(self.TAG, "add_node: invalid operation")
@@ -106,9 +109,9 @@ class GraphParams:
             if self.ADJACENCY_MATRIX[vertex_1][vertex_2] == 0:
                 self.ADJACENCY_MATRIX[vertex_1][vertex_2] = 1
                 self.RECOMPUTE_PARAMS_REQUIRED = True
-            Log.i(self.TAG, "add_edge: N=" + str(self.N))
-            Log.i(self.TAG, "add_edge: \nP=" + str(self.P))
-            Log.i(self.TAG, "add_edge: \nAM=" + str(self.ADJACENCY_MATRIX))
+            # Log.i(self.TAG, "add_edge: N=" + str(self.N))
+            # Log.i(self.TAG, "add_edge: \nP=" + str(self.P))
+            # Log.i(self.TAG, "add_edge: \nAM=" + str(self.ADJACENCY_MATRIX))
             return True
         else:
             Log.e(self.TAG, "add_edge: invalid operation")
@@ -140,11 +143,16 @@ class GraphParams:
 # for testing
 if __name__ == '__main__':
     am = [[0, 1, 1, 1], [0, 0, 0, 1], [1, 0, 0, 1], [1, 0, 1, 0]]
+    # gp.add_node(3)
+    # gp.add_edge(0, 3)
+    # gp.add_edge(2, 3)
+    # gp.add_edge(1, 3)
+    # gp.add_edge(3, 2)
+    # gp.add_edge(3, 0)
     gp = GraphParams(am)
-    gp.add_node(3)
-    gp.add_edge(0, 3)
-    gp.add_edge(2, 3)
-    gp.add_edge(1, 3)
-    gp.add_edge(3, 2)
-    gp.add_edge(3, 0)
     gp.compute_params()
+    print gp.get_p()
+    print ""
+    gp1 = GraphParams(am)
+    gp1.compute_params1([0, 1, 2, 3])
+    print gp1.get_p()

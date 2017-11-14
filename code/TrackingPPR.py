@@ -11,6 +11,7 @@ class TrackingPPR:
         pass
 
     def gauss_south_well(self, x, p):
+        iteration = 0
         n = len(x)
         b = np.empty((n, 1), dtype=np.double)
         b.fill(1 / np.double(n))
@@ -21,11 +22,12 @@ class TrackingPPR:
         Log.i("gauss_south_well", "r="+str(r))
 
         while True:
+            iteration += 1
             # index of max r
             i = np.argmax([abs(v) for v in r])
 
             if abs(r[i]) < self.EPSILON:
-                return x
+                return x, iteration
 
             ei = np.zeros((n, 1))
             ei[i][0] = 1

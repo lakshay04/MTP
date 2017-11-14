@@ -9,7 +9,7 @@ class RawInputTaker:
         return self.ADJACENCY_MATRIX
 
     def get_input_no(self):
-        return raw_input("input no: ")
+        return raw_input()
 
     def get_input(self):
-        return raw_input("input: ")
+        return raw_input()
