@@ -13,16 +13,14 @@ class Streamer:
     GRAPH_PARAMS = None
     TIME_FILE = None
     ITER_FILE = None
-    AM_FILE = None
 
-    def __init__(self, graph_params):
-        self.TRACKING_PPR = TrackingPPR.TrackingPPR()
+    def __init__(self, graph_params, file_prefix, epsilon):
+        self.TRACKING_PPR = TrackingPPR.TrackingPPR(epsilon)
         self.GRAPH_PARAMS = graph_params
         self.X = np.zeros((graph_params.get_n(), 1), dtype=np.double)
         self.X.fill(1/np.double(graph_params.get_n()))
-        self.TIME_FILE = open("out/times.txt", "w")
-        self.ITER_FILE = open("out/iter.txt", "w")
-        self.AM_FILE = open("out/am.txt", "w")
+        self.TIME_FILE = open("out/"+file_prefix+"_times.txt", "w+")
+        self.ITER_FILE = open("out/"+file_prefix+"_iter.txt", "w+")
         self.compute_x()
 
     def start(self, input_taker):
@@ -67,6 +65,7 @@ class Streamer:
 
                 elif input_type == 'x':
                     break_flag = True
+                    break
 
                 else:
                     Log.e("start", "invalid input query="+str(query))
@@ -86,9 +85,9 @@ class Streamer:
     def compute_x(self):
         if len(self.X) == 1:
             return
-        time1 = time.clock()
+        time1 = time.time()
         self.X, iteration = self.TRACKING_PPR.gauss_south_well(self.X, self.GRAPH_PARAMS.get_p())
-        time2 = time.clock()
+        time2 = time.time()
         timedel = str(time2 - time1)
         Log.exc("compute_x", "time="+str(timedel))
         Log.exc("compute_x", "iteration=" + str(iteration))
@@ -98,13 +97,17 @@ class Streamer:
 
 # for testing
 if __name__ == '__main__':
-    noOfEdges = int(raw_input())
-    am = np.zeros((noOfEdges, noOfEdges))
-    for i in xrange(noOfEdges):
+    filePrefix = raw_input()
+    epsilon = float(raw_input())
+    batchSize = int(raw_input())
+    initialEdgesNo = int(raw_input())
+    noOfNodes = int(raw_input())
+    am = np.zeros((noOfNodes, noOfNodes))
+    for i in xrange(noOfNodes):
         vals = str(raw_input()).split(" ")
         for j in xrange(len(vals)):
             am[i][j] = int(vals[j])
-    it = OboInputTaker(am, 74187)
+    it = OboInputTaker(am, initialEdgesNo)
     gp = GraphParams.GraphParams(it.get_init())
-    st = Streamer(gp)
+    st = Streamer(gp, filePrefix, epsilon)
     st.start(RawInputTaker(am))

@@ -8,13 +8,15 @@ class OboInputTaker:
     N = None
     Q = None
     INITIAL_EDGES = None
+    BATCH_SIZE = None
 
 #74187
-    def __init__(self, adjacency_matrix, initial_edges):
+    def __init__(self, adjacency_matrix, initial_edges, batch_size=1):
         self.ADJACENCY_MATRIX = adjacency_matrix
         self.N = len(adjacency_matrix)
         self.CUR_N = 1
         self.INITIAL_EDGES = initial_edges
+        self.BATCH_SIZE = batch_size
         self.reset()
 
     def reset(self):
@@ -28,7 +30,7 @@ class OboInputTaker:
         return init_am
 
     def get_input_no(self):
-        return 1
+        return self.BATCH_SIZE
 
     def get_input(self):
         curv = self.Q[0]

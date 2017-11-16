@@ -7,8 +7,8 @@ class TrackingPPR:
     DAMPING_FACTOR = 0.85
     EPSILON = 0.0001
 
-    def __init__(self):
-        pass
+    def __init__(self, epsilon):
+        self.EPSILON = epsilon
 
     def gauss_south_well(self, x, p):
         iteration = 0
@@ -19,7 +19,7 @@ class TrackingPPR:
         # calculating r from xnew - x
         r = (1 - self.DAMPING_FACTOR)*b - np.dot((np.identity(n) - self.DAMPING_FACTOR * p), x)
 
-        Log.i("gauss_south_well", "r="+str(r))
+        # Log.i("gauss_south_well", "r="+str(r))
 
         while True:
             iteration += 1

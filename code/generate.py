@@ -1,13 +1,17 @@
 from OboInputTaker import *
 import numpy as np
 
+# for facebook 58234 for 30000 edges
+
+batchSize = int(raw_input())
+initialEdges = int(raw_input())
 noOfEdges = int(raw_input())
 am = np.zeros((noOfEdges, noOfEdges))
 for i in xrange(noOfEdges):
     vals = str(raw_input()).split(" ")
     for j in xrange(len(vals)):
         am[i][j] = int(vals[j])
-it = OboInputTaker(am, 74187)
+it = OboInputTaker(am, initialEdges, batchSize)
 input_taker = it
 
 break_flag = False
@@ -18,7 +22,6 @@ while True:
     no_of_inputs = input_taker.get_input_no()
     output = ""
     output += str(no_of_inputs) + "\n"
-    worth_it = False
 
     i = 0
     while i < no_of_inputs:
@@ -30,22 +33,20 @@ while True:
         input_type = query[0]
 
         if input_type == 'e':
-            worth_it = True
+            i += 1
             output += query_original + "\n"
 
         elif input_type == 'n':
-            worth_it = True
+            i += 1
             output += query_original + "\n"
 
         elif input_type == 'x':
-            worth_it = True
+            i += 1
             output += query_original + "\n"
             break_flag = True
+            break
 
-        i += 1
-
-    if worth_it:
-        print output,
+    print output,
 
     if break_flag:
         break
